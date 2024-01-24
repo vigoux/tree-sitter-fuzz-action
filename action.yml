@@ -12,6 +12,11 @@ inputs:
   time:
     description: "Fuzzing time"
     default: 120
+artifact-prefix:
+  description: >
+    A prefix for saved fuzzing artifacts. Clang saves outputs as
+    `$(artifact_prefix)file`.
+  default: "./"
 runs:
   using: "docker"
   image: "Dockerfile"
@@ -19,4 +24,5 @@ runs:
     - ${{ inputs.language }}
     - ${{ inputs.timeout }}
     - ${{ inputs.time }}
+    - ${{ inputs.artifact-prefix }}
     - ${{ inputs.external-scanner }}
