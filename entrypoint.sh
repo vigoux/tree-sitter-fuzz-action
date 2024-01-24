@@ -7,11 +7,21 @@ ROOT_DIR="fuzzer"
 LANG=$1
 TIMEOUT=$2
 MAX_TOTAL_TIME=$3
+ARTIFACT_PREFIX=$5
 SCANNER=$4
+
 if [ "$SCANNER" = "scanner.cc" ]; then
 	XFLAG="c++"
 else
 	XFLAG="c"
+fi
+
+if [ -n "$ARTIFACT_PREFIX" ]; then
+        # Escape the prefix to pass as a single arg
+        prefix_escaped=$(printf "%q" "$ARTIFACT_PREFIX")
+        EXTRA_FLAGS="-artifact_prefix=$prefix_escaped"
+else
+        EXTRA_FLAGS=""
 fi
 
 shift 4
@@ -29,7 +39,7 @@ build_dict() {
 }
 
 build_fuzzer() {
-	cat <<END | clang -fsanitize=fuzzer,address,undefined $CFLAGS -lstdc++ -g -x $XFLAG - src/$SCANNER src/parser.c $@ -o $ROOT_DIR/fuzzer
+	cat << END | clang -fsanitize=fuzzer,address,undefined $CFLAGS -lstdc++ -g $EXTRA_FLAGS -x $XFLAG - src/$SCANNER src/parser.c $@ -o $ROOT_DIR/fuzzer
 #include <stdio.h>
 #include <stdlib.h>
 #include <tree_sitter/api.h>

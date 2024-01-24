@@ -14,6 +14,11 @@ timeout:
 time:
   description: "Fuzzing time"
   default: 120
+artifact-prefix:
+  description: >
+    A prefix for saved fuzzing artifacts. Clang saves outputs as
+    `$(artifact-prefix)file`.
+  default: "./"
 ```
 
 Example configuration (for the `vim` parser):
@@ -42,4 +47,5 @@ jobs:
           external-scanner: src/scanner.c
           time: 60
           timeout: 5
+          artifact-prefix: fuzz-output/
 ```
